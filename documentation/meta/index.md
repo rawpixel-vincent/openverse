@@ -15,4 +15,5 @@ monitoring/index
 maintenance/index
 communication_aliases
 codespell
+media_properties
 ```
