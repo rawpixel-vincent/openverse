@@ -128,10 +128,10 @@ class OembedRequestSerializer(serializers.Serializer):
         url = add_protocol(value)
         if url.endswith("/"):
             url = url[:-1]
-        identifier = url.rsplit("/", 1)[1]
+        possible_identifier = url.rsplit("/", 1)
         try:
-            uuid = UUID(identifier)
-        except ValueError:
+            uuid = UUID(possible_identifier[1])
+        except (ValueError, IndexError):
             raise serializers.ValidationError("Could not parse identifier from URL.")
         return uuid
 
