@@ -3,7 +3,7 @@ from typing import Union
 
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, NotFound
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -270,9 +270,8 @@ class MediaViewSet(AsyncViewSetMixin, AsyncAPIView, ReadOnlyModelViewSet):
             self.paginator.result_count = 10
         except ValueError as e:
             raise APIException(getattr(e, "message", str(e)))
-        # If there are no hits in the search controller
-        except IndexError:
-            raise APIException("Could not find items.", 404)
+        except APIException:
+            raise NotFound("Could not find the main item or related items.")
 
         serializer_context = self.get_serializer_context()
 

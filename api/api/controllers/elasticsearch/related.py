@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from rest_framework.exceptions import APIException
+
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import Match, Q, Term
 from elasticsearch_dsl.response import Hit
@@ -27,7 +29,10 @@ def related_media(uuid: str, index: str, filter_dead: bool) -> list[Hit]:
 
     # Search the default index for the item itself as it might be sensitive.
     item_search = Search(index=index)
-    item_hit = item_search.query(Term(identifier=uuid)).execute().hits[0]
+    items = item_search.query(Term(identifier=uuid)).execute().hits
+    if not items:
+        raise APIException("Could not find items.", 404)
+    item_hit = items[0]
 
     # Match related using title.
     title = getattr(item_hit, "title", None)
