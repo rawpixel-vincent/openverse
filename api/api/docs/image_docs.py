@@ -71,7 +71,7 @@ stats = custom_extend_schema(
 
         By using this endpoint, you can obtain info about content providers such
         as {fields_to_md(ProviderSerializer.Meta.fields)}.""",
-    res={200: (ProviderSerializer, image_stats_200_example)},
+    res={200: (ProviderSerializer(many=True), image_stats_200_example)},
     eg=[image_stats_curl],
 )
 
