@@ -1,7 +1,7 @@
 # Publish
 
 The production API and ingestion server Docker images are published to
-[Github Container Registry](https://ghcr.io). They can be found here:
+[GitHub Container Registry](https://ghcr.io). They can be found here:
 
 - API:
   [ghcr.io/wordpress/openverse-api](https://ghcr.io/wordpress/openverse-api)
