@@ -50,7 +50,7 @@ class FieldSqlInfo:
 
 
 def create_db_props_dict(
-    media_type: Literal["image", "audio"]
+    media_type: Literal["image", "audio"],
 ) -> dict[str, FieldSqlInfo]:
     """
     Parse the DDL for a media type and returns a list of field
