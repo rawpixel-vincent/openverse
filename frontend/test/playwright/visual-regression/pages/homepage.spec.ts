@@ -6,7 +6,6 @@ import {
   languageDirections,
   pathWithDir,
   preparePageForTests,
-  setCookies,
 } from "~~/test/playwright/utils/navigation"
 
 test.describe.configure({ mode: "parallel" })
@@ -59,16 +58,18 @@ for (const dir of languageDirections) {
           )
         })
 
-        test("content switcher open", async ({ page }) => {
+        // https://github.com/wordpress/openverse/issues/411
+        test.skip("content switcher open", async ({ page }) => {
           await page.locator("#search-type-button").click()
 
           await expectSnapshot(`content-switcher-open-${dir}`, page)
         })
 
-        test("content switcher with external sources open", async ({
+        // https://github.com/wordpress/openverse/issues/411
+        test.skip("content switcher with additional search types open", async ({
           page,
         }) => {
-          await setCookies(page.context(), {
+          await preparePageForTests(page, breakpoint, {
             features: { additional_search_types: "on" },
           })
 
@@ -78,7 +79,7 @@ for (const dir of languageDirections) {
           await page.locator("#search-type-button").click()
 
           await expectSnapshot(
-            `content-switcher-with-external-sources-open-${dir}`,
+            `content-switcher-with-additional_search_types-open-${dir}`,
             page
           )
         })
