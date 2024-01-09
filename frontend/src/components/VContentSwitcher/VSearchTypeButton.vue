@@ -1,16 +1,20 @@
 <template>
   <VButton
-    class="min-w-12 gap-x-2"
-    :class="showLabel ? '!px-3' : 'w-12'"
+    class="gap-x-2"
+    :class="{ '!px-3': showLabel }"
     variant="bordered-white"
+    :disabled="!doneHydrating"
+    :icon-only="!showLabel"
     size="large"
     :aria-label="$t('searchType.selectLabel', { type: label })"
     v-bind="$attrs"
     @click="$emit('click')"
   >
-    <VIcon :name="searchType" class="h-6 w-6" />
+    <VIcon :name="searchType" :size="6" />
     <template v-if="showLabel">
-      <span class="label-regular block truncate text-start">{{ label }}</span>
+      <span class="label-regular block flex-shrink-0 truncate text-start">{{
+        label
+      }}</span>
       <VIcon name="caret-down" />
     </template>
   </VButton>
@@ -23,6 +27,8 @@ import type { SearchType } from "~/constants/media"
 import { warn } from "~/utils/console"
 
 import { defineEvent } from "~/types/emits"
+
+import { useHydrating } from "~/composables/use-hydrating"
 
 import VIcon from "~/components/VIcon/VIcon.vue"
 import VButton from "~/components/VButton.vue"
@@ -62,6 +68,11 @@ export default defineComponent({
       warn(
         "You should provide `aria-haspopup` and `aria-expanded` props to VSearchTypeButton."
       )
+    }
+    const { doneHydrating } = useHydrating()
+
+    return {
+      doneHydrating,
     }
   },
 })

@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test"
 
+import { preparePageForTests } from "~~/test/playwright/utils/navigation"
+
 test.describe.configure({ mode: "parallel" })
 const DESCRIPTION =
   "Search over 700 million free and openly licensed images, photos, audio, and other media types for reuse and remixing."
@@ -12,27 +14,28 @@ const pages = {
     ogTitle: "Openverse",
     robots: "all",
   },
-  // allSearch: {
-  //   url: "/search/?q=birds",
-  //   title: "birds | Openverse",
-  //   ogImage: "/openverse-default.jpg",
-  //   ogTitle: "Openverse",
-  //   robots: "all",
-  // },
-  // imageSearch: {
-  //   url: "/search/image?q=birds",
-  //   title: "birds | Openverse",
-  //   ogImage: "/openverse-default.jpg",
-  //   ogTitle: "Openverse",
-  //   robots: "all",
-  // },
-  // audioSearch: {
-  //   url: "/search/audio?q=birds",
-  //   title: "birds | Openverse",
-  //   ogImage: "/openverse-default.jpg",
-  //   ogTitle: "Openverse",
-  //   robots: "all",
-  // },
+  allSearch: {
+    url: "/search/?q=birds",
+    title: "birds | Openverse",
+    ogImage: "/openverse-default.jpg",
+    ogTitle: "Openverse",
+    robots: "all",
+  },
+  imageSearch: {
+    url: "/search/image?q=birds",
+    title: "birds | Openverse",
+    ogImage: "/openverse-default.jpg",
+    ogTitle: "Openverse",
+    robots: "all",
+  },
+  audioSearch: {
+    url: "/search/audio?q=birds",
+    title: "birds | Openverse",
+    ogImage: "/openverse-default.jpg",
+    ogTitle: "Openverse",
+    robots: "all",
+  },
+  // TODO: uncomment after adding single result pages
   // imageDetail: {
   //   url: "/image/da5cb478-c093-4d62-b721-cda18797e3fb",
   //   title: "bird | Openverse",
@@ -62,6 +65,7 @@ const pages = {
 test.describe("page metadata", () => {
   for (const openversePage of Object.values(pages)) {
     test(`${openversePage.url}`, async ({ page }) => {
+      await preparePageForTests(page, "xl")
       await page.goto(openversePage.url)
       await expect(page).toHaveTitle(openversePage.title)
       const metaDescription = page.locator('meta[name="description"]')

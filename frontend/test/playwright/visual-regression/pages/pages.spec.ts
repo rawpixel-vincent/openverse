@@ -49,8 +49,7 @@ test.describe("layout color is set correctly", () => {
       await preparePageForTests(page, "lg", { dismissFilter: false })
     })
 
-    // https://github.com/wordpress/openverse/issues/411
-    test.skip("change language on homepage and search", async ({ page }) => {
+    test("change language on homepage and search", async ({ page }) => {
       await page.goto("/")
       await page.getByRole("combobox", { name: "Language" }).selectOption("ar")
       const searchBar = page.getByPlaceholder(

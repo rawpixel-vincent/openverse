@@ -12,6 +12,7 @@
 
     <VStandaloneSearchBar
       ref="searchBarRef"
+      :disabled="!doneHydrating"
       class="mt-4 md:mt-6"
       :has-popover="!!triggerElement && isContentSwitcherVisible"
       @submit="handleSearch"
@@ -85,6 +86,8 @@ import { useDialogControl } from "~/composables/use-dialog-control"
 
 import { useUiStore } from "~/stores/ui"
 
+import { useHydrating } from "~/composables/use-hydrating"
+
 import VContentSettingsModalContent from "~/components/VHeader/VHeaderMobile/VContentSettingsModalContent.vue"
 import VLink from "~/components/VLink.vue"
 import VPopoverContent from "~/components/VPopover/VPopoverContent.vue"
@@ -117,6 +120,8 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const { doneHydrating } = useHydrating()
+
     const searchTypeButtonRef = ref<InstanceType<
       typeof VSearchTypeButton
     > | null>(null)
@@ -173,6 +178,7 @@ export default defineComponent({
       isSm,
 
       triggerElement,
+      doneHydrating,
       onTriggerClick,
       handleSelect,
       searchTypeProps,

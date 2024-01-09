@@ -17,6 +17,7 @@
         ref="menuButtonRef"
         variant="transparent-dark"
         size="large"
+        :aria-disabled="!doneHydrating"
         :icon-props="{ name: 'menu' }"
         :label="$t('header.aria.menu')"
         v-bind="triggerA11yProps"
@@ -85,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { useRoute } from "#imports"
+import { useHydrating, useRoute } from "#imports"
 
 import { computed, defineComponent, ref, watch } from "vue"
 
@@ -142,6 +143,8 @@ export default defineComponent({
       () => modalContentRef.value?.deactivateFocusTrap
     )
 
+    const { doneHydrating } = useHydrating()
+
     const {
       close: closePageMenu,
       open: openPageMenu,
@@ -178,6 +181,7 @@ export default defineComponent({
       currentPage,
 
       isModalVisible,
+      doneHydrating,
       closePageMenu,
       openPageMenu,
       isSm,

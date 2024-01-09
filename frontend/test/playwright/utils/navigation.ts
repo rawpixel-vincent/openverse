@@ -151,6 +151,7 @@ export const setContentSwitcherState = async (
 
   if (shouldBePressed) {
     if (!isPressed) {
+      await buttonLocator.isEnabled()
       await buttonLocator.click()
     }
     return openContentSettingsTab(page, contentSwitcherKind, dir)
@@ -230,9 +231,11 @@ export const selectHomepageSearchType = async (
   searchType: SupportedSearchType,
   dir: LanguageDirection = "ltr"
 ) => {
-  await page
-    .getByRole("button", { name: searchTypeNames[dir][ALL_MEDIA] })
-    .click()
+  // Wait for hydration to complete
+  const searchTypeButton = page.getByRole("button", {
+    name: searchTypeNames[dir][ALL_MEDIA],
+  })
+  await searchTypeButton.click()
   await page
     .getByRole("radio", { name: searchTypeNames[dir][searchType] })
     .click()
@@ -251,13 +254,23 @@ export const preparePageForTests = async (
     dismissFilter: boolean
   }> = {}
 ) => {
-  const { features = {}, dismissBanners = true, dismissFilter = true } = options
-  const featuresCookie: Record<string, "on" | "off"> = {}
-  if (options.features) {
-    for (const [feature, status] of Object.entries(features)) {
-      featuresCookie[feature] = status
-    }
+  const { dismissBanners = true, dismissFilter = true } = options
+  const defaultFeatures: Record<string, "on" | "off"> = {
+    fetch_sensitive: "off",
+    fake_sensitive: "off",
+    analytics: "on",
+    additional_search_types: "off",
+    additional_search_views: "off",
   }
+  const features = {
+    ...defaultFeatures,
+    ...options.features,
+  }
+  const featuresCookie: Record<string, "on" | "off"> = {}
+  for (const [feature, status] of Object.entries(features)) {
+    featuresCookie[feature] = status
+  }
+
   await setCookies(page.context(), {
     features: featuresCookie,
     ui: {
@@ -288,31 +301,34 @@ export const goToSearchTerm = async (
     await page.goto(pathWithDir(path, dir))
   } else {
     await page.goto(pathWithDir("/", dir))
+    // Wait for hydration to complete
+    const submitButton = page.getByRole("button", {
+      name: t("search.search", dir),
+    })
+    await submitButton.isEnabled()
     // Select the search type
     if (searchType !== "all") {
       await selectHomepageSearchType(page, searchType, dir)
     }
     // Type search term
     const searchInput = page.locator('main input[type="search"]')
-    await searchInput.type(term)
+    await searchInput.fill(term)
     // Click search button
     // Wait for navigation
-    await page.getByRole("button", { name: t("search.search", dir) }).click()
+    await submitButton.click()
     await page.waitForURL(/search/, { waitUntil: "load" })
   }
   await scrollDownAndUp(page)
 }
 
 /**
- * Fills the search input in the page header, clicks on submit
- * and waits for navigation.
+ * Fills the search input in the page header, clicks on submit.
  */
 export const searchFromHeader = async (page: Page, term: string) => {
   // Double-click on the search bar to remove previous value
   await page.dblclick("id=search-bar")
   await page.fill("id=search-bar", term)
   await page.keyboard.press("Enter")
-  await page.waitForURL(/search/)
 }
 
 /**

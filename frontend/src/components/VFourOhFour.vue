@@ -29,14 +29,23 @@
             </template>
           </i18n-t>
         </p>
-        <VStandaloneSearchBar route="404" @submit="handleSearch" />
+        <VStandaloneSearchBar
+          route="404"
+          :disabled="!doneHydrating"
+          @submit="handleSearch"
+        />
       </main>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineNuxtComponent, navigateTo, useHead } from "#imports"
+import {
+  defineNuxtComponent,
+  navigateTo,
+  useHead,
+  useHydrating,
+} from "#imports"
 
 import { useSearchStore } from "~/stores/search"
 
@@ -58,6 +67,7 @@ export default defineNuxtComponent({
   props: ["error"],
   setup() {
     const searchStore = useSearchStore()
+    const { doneHydrating } = useHydrating()
 
     const { sendCustomEvent } = useAnalytics()
 
@@ -78,6 +88,7 @@ export default defineNuxtComponent({
 
     return {
       handleSearch,
+      doneHydrating,
 
       skipToContentTargetId,
     }

@@ -40,8 +40,7 @@ test.beforeEach(async ({ context, page }) => {
 
 test.describe("homepage", () => {
   for (const searchType of supportedSearchTypes) {
-    // https://github.com/wordpress/openverse/issues/411
-    test.skip(`can change type and search for ${searchType} from homepage`, async ({
+    test(`can change type and search for ${searchType} from homepage`, async ({
       page,
     }) => {
       await goToSearchTerm(page, "cat", {
@@ -59,8 +58,6 @@ test.describe("homepage", () => {
   }) => {
     await page.goto("/")
 
-    // wait for hydration
-    await sleep(500)
     await clickPopoverButton(page)
     await popoverIsVisible(page)
 
@@ -107,6 +104,29 @@ test.describe("analytics", () => {
       component: "VSearchTypes",
       next: AUDIO,
       previous: ALL_MEDIA,
+    })
+  })
+
+  test("sends EXTERNAL_LINK_CLICK event when clicking on external link", async ({
+    context,
+    page,
+  }) => {
+    const pagePromise = context.waitForEvent("page")
+    const analyticsEvents = collectAnalyticsEvents(context)
+
+    await page.goto("/")
+    await page.getByRole("link", { name: /licenses/i }).click()
+
+    const newPage = await pagePromise
+    await newPage.close()
+    await expect(page.getByRole("link", { name: /licenses/i })).toBeVisible()
+
+    const externalLinkClickEvent = analyticsEvents.find(
+      (event) => event.n === "EXTERNAL_LINK_CLICK"
+    )
+
+    expectEventPayloadToMatch(externalLinkClickEvent, {
+      url: "https://creativecommons.org/about/cclicenses/",
     })
   })
 })

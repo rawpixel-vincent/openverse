@@ -65,9 +65,7 @@ for (const dir of languageDirections) {
         })
       })
     })
-  })
 
-  breakpoints.describeEvery(({ breakpoint, expectSnapshot }) => {
     test(`${dir} content switcher with additional search types open`, async ({
       page,
     }) => {
