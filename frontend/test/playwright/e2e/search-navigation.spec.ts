@@ -89,10 +89,7 @@ test.describe("search history navigation", () => {
       await expect(page.locator('input[name="q"]')).toHaveValue("galah")
     })
 
-    // https://github.com/wordpress/openverse/issues/411
-    test.skip("navigates to the image detail page correctly", async ({
-      page,
-    }) => {
+    test("navigates to the image detail page correctly", async ({ page }) => {
       await goToSearchTerm(page, "honey")
       const figure = page.locator("figure").first()
       const imgTitle = await figure.locator("img").getAttribute("alt")
@@ -106,8 +103,7 @@ test.describe("search history navigation", () => {
     })
 
     test.describe("back to search results link", () => {
-      // https://github.com/wordpress/openverse/issues/411
-      test.skip("is visible in breadcrumb when navigating to image details page and returns to the search page", async ({
+      test("is visible in breadcrumb when navigating to image details page and returns to the search page", async ({
         page,
       }) => {
         const url = "/search?q=galah"
@@ -119,8 +115,7 @@ test.describe("search history navigation", () => {
         await expect(page).toHaveURL(url)
       })
 
-      // https://github.com/wordpress/openverse/issues/411
-      test.skip("is visible in breadcrumb when navigating to localized image details page", async ({
+      test("is visible in breadcrumb when navigating to localized image details page", async ({
         page,
       }) => {
         await page.goto("/es/search/?q=galah")
@@ -130,8 +125,7 @@ test.describe("search history navigation", () => {
         ).toBeVisible()
       })
 
-      // https://github.com/wordpress/openverse/issues/411
-      test.skip("is visible in breadcrumb when navigating to localized audio details page", async ({
+      test("is visible in breadcrumb when navigating to localized audio details page", async ({
         page,
       }) => {
         await page.goto("/es/search/?q=galah")
@@ -149,8 +143,7 @@ test.describe("search query param is set on a single page results", () => {
     await page.goto(`/search?q=cat`)
   })
 
-  // https://github.com/wordpress/openverse/issues/411
-  test.skip("the search query param should be set to the search term inside the header on a single page result of type image", async ({
+  test("the search query param should be set to the search term inside the header on a single page result of type image", async ({
     page,
   }) => {
     await openFirstResult(page, "image")
@@ -160,8 +153,7 @@ test.describe("search query param is set on a single page results", () => {
     expect(query).toEqual("cat")
   })
 
-  // https://github.com/wordpress/openverse/issues/411
-  test.skip("the search query param should be set to the search term inside the header on a single page result of type audio", async ({
+  test("the search query param should be set to the search term inside the header on a single page result of type audio", async ({
     page,
   }) => {
     await openFirstResult(page, "audio")

@@ -15,8 +15,7 @@ test.describe("global audio", () => {
     test.beforeEach(async ({ page }) => {
       await preparePageForTests(page, "xs")
     })
-    // https://github.com/WordPress/openverse/issues/411
-    test.skip("track continues playing when navigating from search to details page", async ({
+    test("track continues playing when navigating from search to details page", async ({
       page,
     }) => {
       await preparePageForTests(page, "xs")
@@ -54,8 +53,7 @@ test.describe("global audio", () => {
       await expect(page.locator(".global-audio")).toBeHidden()
     })
 
-    // https://github.com/wordpress/openverse/issues/411
-    test.skip("player does not reproduce an audio different that the current audio in the details page", async ({
+    test("player does not reproduce an audio different that the current audio in the details page", async ({
       page,
     }) => {
       await preparePageForTests(page, "xs")

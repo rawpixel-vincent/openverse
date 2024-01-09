@@ -18,8 +18,7 @@ test.describe("all results grid analytics test", () => {
     await page.goto("/search/?q=birds")
   })
 
-  // https://github.com/wordpress/openverse/issues/411
-  test.skip("should send SELECT_SEARCH_RESULT event when audio result is selected", async ({
+  test("should send SELECT_SEARCH_RESULT event when audio result is selected", async ({
     context,
     page,
   }) => {
@@ -40,8 +39,7 @@ test.describe("all results grid analytics test", () => {
     })
   })
 
-  // https://github.com/wordpress/openverse/issues/411
-  test.skip("should send SELECT_SEARCH_RESULT event when image result is selected", async ({
+  test("should send SELECT_SEARCH_RESULT event when image result is selected", async ({
     context,
     page,
   }) => {
