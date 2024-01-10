@@ -18,10 +18,25 @@
       <NuxtPage
         v-if="isAllView || isSupportedMediaType(searchType)"
         :key="$route.path"
+        :results="results ?? []"
+        :fetch-state="fetchState"
         :search-term="searchTerm"
         :supported="supported"
         data-testid="search-results"
       />
+      <VGridSkeleton
+        v-if="pending && (!results || !results.length)"
+        :is-for-tab="isSearchTypeSupported(searchType) ? searchType : 'all'"
+      />
+      <footer :class="isAllView ? 'mb-6 mt-4 lg:mb-10' : 'mt-4'">
+        <VLoadMore
+          v-if="isSearchTypeSupported(searchType)"
+          :fetch-state="fetchState"
+          :search-term="searchTerm"
+          :search-type="searchType"
+          @load-more="handleLoadMore"
+        />
+      </footer>
       <VExternalSearchForm
         v-if="!isAllView"
         :search-term="searchTerm"
@@ -41,11 +56,12 @@
 import {
   defineNuxtComponent,
   definePageMeta,
+  isClient,
+  isSearchTypeSupported,
   navigateTo,
   showError,
   useAsyncData,
   useHead,
-  useNuxtApp,
 } from "#imports"
 
 import { computed, inject, ref, watch } from "vue"
@@ -67,16 +83,19 @@ import VErrorSection from "~/components/VErrorSection/VErrorSection.vue"
 import VScrollButton from "~/components/VScrollButton.vue"
 import VExternalSearchForm from "~/components/VExternalSearch/VExternalSearchForm.vue"
 import VSearchResultsTitle from "~/components/VSearchResultsTitle.vue"
+import VGridSkeleton from "~/components/VSkeleton/VGridSkeleton.vue"
 
 export default defineNuxtComponent({
   name: "BrowsePage",
+  methods: { isSearchTypeSupported },
   components: {
+    VGridSkeleton,
     VErrorSection,
     VSearchResultsTitle,
     VExternalSearchForm,
     VScrollButton,
   },
-  setup() {
+  async setup() {
     definePageMeta({
       layout: "search-layout",
       middleware: searchMiddleware,
@@ -128,46 +147,75 @@ export default defineNuxtComponent({
       query,
       (newQuery, oldQuery) => {
         if (!areQueriesEqual(newQuery, oldQuery)) {
-          shouldFetch.value = true
+          debouncedQuery.value = newQuery
+          page.value = 1
           return navigateTo(searchStore.getSearchPath())
         }
       },
       { debounce: 800, maxWait: 5000 }
     )
+    const debouncedQuery = ref(query.value)
 
     const shouldFetchSensitiveResults = computed(() => {
       return featureFlagStore.isOn("fetch_sensitive")
     })
-
-    const shouldFetch = ref(false)
-    watch([shouldFetchSensitiveResults, searchTerm, searchType], () => {
-      scrollToTop()
-      shouldFetch.value = true
+    watch(shouldFetchSensitiveResults, () => {
+      page.value = 1
     })
 
-    const nuxtApp = useNuxtApp()
+    const storeResults = computed(() => {
+      const st = searchType.value
+      return st === ALL_MEDIA
+        ? mediaStore.allMedia
+        : isSupportedMediaType(st)
+        ? mediaStore.resultItems[st]
+        : []
+    })
+    const page = ref(1)
 
-    useAsyncData(
+    const handleLoadMore = () => {
+      page.value = page.value + 1
+    }
+
+    const { error, pending } = await useAsyncData(
       "search",
       async () => {
-        // Do not re-fetch data that was already fetched on the server
-        if (nuxtApp.isHydrating) {
-          return
+        const isFirstPageRequest = page.value < 2
+        if (isFirstPageRequest && isClient) {
+          scrollToTop()
         }
-        shouldFetch.value = false
-        try {
-          return await mediaStore.fetchMedia()
-        } catch (error) {
-          if (fetchingError.value && !handledClientSide(fetchingError.value)) {
-            showError({ ...fetchingError.value, fatal: true })
-          }
-        }
+
+        return await mediaStore.fetchMedia({
+          shouldPersistMedia: !isFirstPageRequest,
+        })
       },
       {
-        watch: [shouldFetch],
-        server: false,
+        watch: [
+          shouldFetchSensitiveResults,
+          searchTerm,
+          searchType,
+          page,
+          debouncedQuery,
+        ],
+        immediate: true,
+        lazy: isClient ?? false,
+        // Minimize the data sent to the client
+        transform: (data) => {
+          if (data) {
+            return data.map((item) => item.id)
+          }
+        },
       }
     )
+
+    watch(error, () => {
+      if (fetchingError.value && !handledClientSide(fetchingError.value)) {
+        showError({
+          ...(fetchingError.value ?? {}),
+          fatal: true,
+        })
+      }
+    })
 
     return {
       showScrollButton,
@@ -181,10 +229,13 @@ export default defineNuxtComponent({
       fetchState,
       isSidebarVisible,
       fetchingError,
+      handleLoadMore,
 
       isAllView,
 
       skipToContentTargetId,
+      results: storeResults,
+      pending,
     }
   },
 })
