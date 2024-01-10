@@ -20,6 +20,10 @@ const getContentLink = async (page: Page, mediaType: SupportedMediaType) => {
   return page.getByRole("link", { name: linkName })
 }
 
+const getBackToSearchLink = (page: Page, locale?: "es") => {
+  return page.getByRole("link", { name: t("singleResult.back", "ltr", locale) })
+}
+
 test.describe("search history navigation", () => {
   breakpoints.describeMobileAndDesktop(({ breakpoint }) => {
     test.beforeEach(async ({ context, page }) => {
@@ -61,9 +65,7 @@ test.describe("search history navigation", () => {
       page,
     }) => {
       await goToSearchTerm(page, "galah")
-      await page
-        .getByRole("link", { name: /See.*images found for .*/i })
-        .click()
+      await (await getContentLink(page, IMAGE)).click()
 
       // There are no content links on single media type search pages
       await expect(await getContentLink(page, IMAGE)).toBeHidden()
@@ -103,13 +105,16 @@ test.describe("search history navigation", () => {
     })
 
     test.describe("back to search results link", () => {
+      const locale = "es"
       test("is visible in breadcrumb when navigating to image details page and returns to the search page", async ({
         page,
       }) => {
-        const url = "/search?q=galah"
-        await page.goto(url)
-        await page.locator('a[href^="/image"]').first().click()
-        const link = page.locator(`text="${t("singleResult.back")}"`)
+        await goToSearchTerm(page, "birds")
+        const url = "/search?q=birds"
+
+        await openFirstResult(page, "image", "ltr")
+
+        const link = getBackToSearchLink(page)
         await expect(link).toBeVisible()
         await link.click()
         await expect(page).toHaveURL(url)
@@ -118,21 +123,19 @@ test.describe("search history navigation", () => {
       test("is visible in breadcrumb when navigating to localized image details page", async ({
         page,
       }) => {
-        await page.goto("/es/search/?q=galah")
-        await page.locator('a[href^="/es/image"]').first().click()
-        await expect(
-          page.locator('text="Volver a los resultados de búsqueda"')
-        ).toBeVisible()
+        await goToSearchTerm(page, "birds", { locale })
+        await openFirstResult(page, "image", "ltr", locale)
+
+        await expect(getBackToSearchLink(page, locale)).toBeVisible()
       })
 
       test("is visible in breadcrumb when navigating to localized audio details page", async ({
         page,
       }) => {
-        await page.goto("/es/search/?q=galah")
-        await page.locator('a[href^="/es/audio"]').first().click()
-        await expect(
-          page.locator('text="Volver a los resultados de búsqueda"')
-        ).toBeVisible()
+        await goToSearchTerm(page, "birds", { locale })
+        await openFirstResult(page, "audio", "ltr", locale)
+
+        await expect(getBackToSearchLink(page, locale)).toBeVisible()
       })
     })
   })

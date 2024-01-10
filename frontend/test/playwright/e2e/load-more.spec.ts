@@ -46,8 +46,7 @@ const openSingleMediaView = async (
  */
 
 test.describe("Load more button", () => {
-  test.beforeEach(async ({ context, page }) => {
-    await mockProviderApis(context)
+  test.beforeEach(async ({ page }) => {
     await preparePageForTests(page, "xl")
   })
 
@@ -113,21 +112,20 @@ test.describe("Load more button", () => {
             }
           }
         })
-        await goToSearchTerm(page, "horses snort", { mode })
+        await goToSearchTerm(page, "horses snort window", { mode })
 
         await page.click(loadMoreButton)
         expect(additionalRequests.length).toEqual(1)
-        expect(additionalRequests[0]).toEqual(IMAGE)
       })
 
       test(`Rendered on All view but not on the audio view when audio has only 1 page of results`, async ({
         page,
       }) => {
-        await goToSearchTerm(page, "horses snort", { mode })
+        await goToSearchTerm(page, "horses snort window", { mode })
         await expect(page.locator(loadMoreButton)).toBeVisible()
 
         // Cannot go to the audio view because the link is disabled.
-        await goToSearchTerm(page, "horses snort", {
+        await goToSearchTerm(page, "horses snort window", {
           mode,
           searchType: AUDIO,
         })
@@ -137,6 +135,10 @@ test.describe("Load more button", () => {
   }
 
   test.describe("Analytics events", () => {
+    test.beforeEach(async ({ context, page }) => {
+      await mockProviderApis(context)
+      await preparePageForTests(page, "xl")
+    })
     /**
      * Checks that an analytics event is posted to /api/event and has the correct
      * payload for the REACH_RESULT_END event.

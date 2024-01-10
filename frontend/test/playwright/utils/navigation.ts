@@ -1,6 +1,8 @@
 import { expect } from "@playwright/test"
 
 import rtlMessages from "~~/test/locales/ar.json"
+import esMessages from "~~/test/locales/es.json"
+import ruMessages from "~~/test/locales/ru.json"
 
 import enMessages from "~/locales/en.json"
 
@@ -22,6 +24,8 @@ import type { BrowserContext, Locator, Page } from "@playwright/test"
 const messages: Record<string, Record<string, unknown>> = {
   ltr: enMessages,
   rtl: rtlMessages,
+  es: esMessages,
+  ru: ruMessages,
 }
 
 const getNestedProperty = (
@@ -47,10 +51,17 @@ const getNestedProperty = (
  * It can handle nested labels that use the dot notation ('header.title').
  * @param path - The label to translate.
  * @param dir - The language direction.
+ * @param locale - If provided, the label will be translated to the given locale.
  */
-export const t = (path: string, dir: LanguageDirection = "ltr"): string => {
+export const t = (
+  path: string,
+  dir: LanguageDirection = "ltr",
+  locale?: "es" | "ru"
+): string => {
   let value = ""
-  if (dir === "rtl") {
+  if (locale) {
+    value = getNestedProperty(messages[locale], path)
+  } else if (dir === "rtl") {
     value = getNestedProperty(messages.rtl, path)
   }
   return value === "" ? getNestedProperty(messages.ltr, path) : value
@@ -288,19 +299,22 @@ export const goToSearchTerm = async (
     searchType?: SupportedSearchType
     mode?: RenderMode
     dir?: LanguageDirection
+    locale?: "ar" | "es" | "ru"
     query?: string // Only for SSR mode
   } = {}
 ) => {
   const searchType = options.searchType || ALL_MEDIA
   const dir = options.dir || "ltr"
+
+  const locale = options.locale
   const mode = options.mode ?? "SSR"
   const query = options.query ? `&${options.query}` : ""
 
   if (mode === "SSR") {
     const path = `${searchPath(searchType)}?q=${term}${query}`
-    await page.goto(pathWithDir(path, dir))
+    await page.goto(pathWithDir(path, dir, locale))
   } else {
-    await page.goto(pathWithDir("/", dir))
+    await page.goto(pathWithDir("/", dir, locale))
     // Wait for hydration to complete
     const submitButton = page.getByRole("button", {
       name: t("search.search", dir),
@@ -340,7 +354,8 @@ export const searchFromHeader = async (page: Page, term: string) => {
 export const openFirstResult = async (
   page: Page,
   mediaType: MediaType,
-  dir: LanguageDirection = "ltr"
+  dir: LanguageDirection = "ltr",
+  locale?: "es" | "ru"
 ) => {
   const firstResult = page.locator(`a[href*="/${mediaType}/"]`).first()
   const firstResultHref = await getLocatorHref(firstResult)
@@ -349,7 +364,9 @@ export const openFirstResult = async (
   // Make sure that navigation to single result page is complete.
   // Using URL is not enough because it changes before navigation is complete.
   await expect(
-    page.getByRole("heading", { name: t("mediaDetails.reuse.title", dir) })
+    page.getByRole("heading", {
+      name: t("mediaDetails.reuse.title", dir, locale),
+    })
   ).toBeVisible()
 
   await scrollDownAndUp(page)
@@ -409,11 +426,15 @@ export const scrollDownAndUp = async (page: Page) => {
 }
 
 /**
- * Adds '/ar' prefix to a rtl route. The path should start with '/'
+ * Adds '/ar' prefix to a rtl route, or a set locale. The path should start with '/'
  */
-export const pathWithDir = (rawPath: string, dir: string) => {
+export const pathWithDir = (
+  rawPath: string,
+  dir: string,
+  locale?: "es" | "ar" | "ru"
+) => {
   const path = rawPath.startsWith("/") ? rawPath : `/${rawPath}`
-  return dir === "rtl" ? `/ar${path}` : path
+  return locale ? `/${locale}${path}` : dir === "rtl" ? `/ar${path}` : path
 }
 
 export interface CookieMap {

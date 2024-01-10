@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test"
 import {
   filters,
   goToSearchTerm,
-  isPageDesktop,
+  preparePageForTests,
   t,
 } from "~~/test/playwright/utils/navigation"
 
@@ -13,15 +13,9 @@ test.describe("sensitive_results", () => {
   test("can set `includeSensitiveResults` filter by toggling the UI", async ({
     page,
   }) => {
-    await page.goto("/preferences")
-    // Feature flag labels are not translated
-    await page
-      .getByLabel(/Mark 50% of results as sensitive to test content safety./i)
-      .check()
-    await page
-      .getByLabel(/Show results marked as sensitive in the results area./i)
-      .check()
-
+    await preparePageForTests(page, "xl", {
+      features: { fake_sensitive: "on" },
+    })
     await goToSearchTerm(page, "cat", { mode: "CSR" })
 
     await filters.open(page)
@@ -30,15 +24,14 @@ test.describe("sensitive_results", () => {
       .getByLabel(t("filters.safeBrowsing.toggles.fetchSensitive.title"))
       .check()
 
-    const searchButtonLabel = new RegExp(
-      t(
-        isPageDesktop(page)
-          ? "browsePage.searchForm.button"
-          : "header.seeResults"
-      ),
-      "i"
-    )
-    await page.getByRole("button", { name: searchButtonLabel }).click()
+    await page.getByRole("link", { name: "Openverse Home" }).click()
+
+    await page.locator('main input[type="search"]').fill("cat")
+    await page.keyboard.press("Enter")
+
+    await expect(
+      page.getByRole("heading", { level: 1, name: /cat/i })
+    ).toBeVisible()
 
     const sensitiveImageLink = page
       .getByRole("link", {
@@ -47,5 +40,6 @@ test.describe("sensitive_results", () => {
       .first()
 
     await expect(sensitiveImageLink).toBeVisible()
+    await page.context().clearCookies()
   })
 })
