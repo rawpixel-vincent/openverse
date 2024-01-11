@@ -24,7 +24,6 @@ import { useAnalytics } from "~/composables/use-analytics"
 import { useMediaStore } from "~/stores/media"
 import { useSearchStore } from "~/stores/search"
 
-import type { FetchState } from "~/types/fetch-state"
 import type { SupportedSearchType } from "~/constants/media"
 
 import VButton from "~/components/VButton.vue"
@@ -35,10 +34,6 @@ export default defineComponent({
     VButton,
   },
   props: {
-    fetchState: {
-      type: Object as PropType<FetchState>,
-      required: true,
-    },
     searchTerm: {
       type: String,
       required: true,
@@ -57,9 +52,7 @@ export default defineComponent({
     const searchStore = useSearchStore()
     const { sendCustomEvent } = useAnalytics()
 
-    // Use the `_searchType` from mediaStore because it falls back to ALL_MEDIA
-    // for unsupported search types.
-    const { resultCount, currentPage } = storeToRefs(mediaStore)
+    const { resultCount, currentPage, fetchState } = storeToRefs(mediaStore)
 
     const searchStarted = computed(() => {
       return searchStore.strategy === "default"
@@ -76,8 +69,8 @@ export default defineComponent({
     const canLoadMore = computed(() => {
       return Boolean(
         searchStarted.value &&
-          !props.fetchState.fetchingError &&
-          !props.fetchState.isFinished &&
+          !fetchState.value.fetchingError &&
+          !fetchState.value.isFinished &&
           resultCount.value > 0
       )
     })
@@ -90,7 +83,7 @@ export default defineComponent({
      *
      */
     const onLoadMore = async () => {
-      if (props.fetchState.isFetching) {
+      if (fetchState.value.isFetching) {
         return
       }
 
@@ -118,7 +111,7 @@ export default defineComponent({
     }
 
     const buttonLabel = computed(() =>
-      props.fetchState.isFetching
+      fetchState.value.isFetching
         ? i18n.t("browsePage.loading")
         : i18n.t("browsePage.load")
     )
@@ -151,6 +144,7 @@ export default defineComponent({
       buttonLabel,
       onLoadMore,
       canLoadMore,
+      fetchState,
 
       loadMoreSectionRef,
     }

@@ -31,7 +31,6 @@
       <footer :class="isAllView ? 'mb-6 mt-4 lg:mb-10' : 'mt-4'">
         <VLoadMore
           v-if="isSearchTypeSupported(searchType)"
-          :fetch-state="fetchState"
           :search-term="searchTerm"
           :search-type="searchType"
           @load-more="handleLoadMore"
@@ -208,14 +207,18 @@ export default defineNuxtComponent({
       }
     )
 
-    watch(error, () => {
-      if (fetchingError.value && !handledClientSide(fetchingError.value)) {
-        showError({
-          ...(fetchingError.value ?? {}),
-          fatal: true,
-        })
-      }
-    })
+    watch(
+      error,
+      () => {
+        if (fetchingError.value && !handledClientSide(fetchingError.value)) {
+          return showError({
+            ...(fetchingError.value ?? {}),
+            fatal: true,
+          })
+        }
+      },
+      { immediate: true }
+    )
 
     return {
       showScrollButton,
