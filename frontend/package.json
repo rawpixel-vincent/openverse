@@ -67,6 +67,7 @@
     "@nuxtjs/sitemap": "^5.0.1",
     "@nuxtjs/tailwindcss": "^6.10.3",
     "@pinia/nuxt": "^0.5.1",
+    "@sentry/vue": "^7.93.0",
     "@tailwindcss/typography": "^0.5.10",
     "@vueuse/core": "^10.2.1",
     "@wordpress/is-shallow-equal": "^4.6.0",
