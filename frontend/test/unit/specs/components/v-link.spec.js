@@ -41,10 +41,10 @@ describe("VLink", () => {
     }
   )
   it.each`
-    href                  | component
-    ${"/about"}           | ${"NuxtLink"}
-    ${"http://localhost"} | ${"A"}
-  `("VLink as a $component handles click", async ({ href }) => {
+    href
+    ${"/about"}
+    ${"http://localhost"}
+  `("VLink handles click", async ({ href }) => {
     const createVLinkWrapper = (href) =>
       // eslint-disable-next-line vue/one-component-per-file
       createApp({}).component("VLinkWrapper", {
