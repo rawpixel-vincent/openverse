@@ -20,6 +20,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue"
 
+import { useHydrating } from "~/composables/use-hydrating"
+
 import VIcon from "~/components/VIcon/VIcon.vue"
 import VButton from "~/components/VButton.vue"
 /**
@@ -36,6 +38,13 @@ export default defineComponent({
       type: String as PropType<"home" | "404" | "search">,
       required: true,
     },
+  },
+  setup() {
+    const { doneHydrating } = useHydrating()
+
+    return {
+      doneHydrating,
+    }
   },
 })
 </script>

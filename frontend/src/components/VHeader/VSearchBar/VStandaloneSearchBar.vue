@@ -29,7 +29,7 @@
       <!-- @slot Extra information goes here -->
       <slot />
     </div>
-    <VSearchButton :route="route" :disabled="disabled" />
+    <VSearchButton :route="route" />
   </form>
 </template>
 
@@ -59,10 +59,6 @@ export default defineComponent({
      * Search bar should not have a focus box when a popover is open.
      */
     hasPopover: {
-      type: Boolean,
-      default: false,
-    },
-    disabled: {
       type: Boolean,
       default: false,
     },
