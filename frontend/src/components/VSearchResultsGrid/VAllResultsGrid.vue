@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="!noResults"
-      class="results-grid mb-4 mt-2 grid grid-cols-2 gap-4 md:mt-0"
-    >
+    <div class="results-grid mb-4 mt-2 grid grid-cols-2 gap-4 md:mt-0">
       <VContentLink
         v-for="[mediaType, count] in resultCounts"
         :key="mediaType"
@@ -63,8 +60,6 @@ import { AudioDetail, ImageDetail, isDetail } from "~/types/media"
 
 import type { SupportedMediaType } from "~/constants/media"
 
-import type { FetchState } from "~/types/fetch-state"
-
 import VSnackbar from "~/components/VSnackbar.vue"
 import VImageCell from "~/components/VImageCell/VImageCell.vue"
 import VAudioResult from "~/components/VSearchResultsGrid/VAudioResult.vue"
@@ -83,16 +78,12 @@ export default defineComponent({
       type: Array as PropType<(AudioDetail | ImageDetail)[]>,
       required: true,
     },
-    fetchState: {
-      type: Object as PropType<FetchState>,
-      required: true,
-    },
     searchTerm: {
       type: String,
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const mediaStore = useMediaStore()
     const searchStore = useSearchStore()
 
@@ -100,10 +91,6 @@ export default defineComponent({
       searchStore.getSearchPath({ type: mediaType })
 
     const resultCounts = computed(() => mediaStore.resultCountsPerMediaType)
-
-    const noResults = computed(
-      () => props.fetchState.isFinished && props.results?.length === 0
-    )
 
     const uiStore = useUiStore()
     const {
@@ -115,7 +102,6 @@ export default defineComponent({
 
     return {
       resultCounts,
-      noResults,
 
       contentLinkPath,
 

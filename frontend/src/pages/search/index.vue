@@ -1,17 +1,11 @@
 <template>
-  <VAllResultsGrid
-    :results="results"
-    :fetch-state="fetchState"
-    :search-term="searchTerm"
-  />
+  <VAllResultsGrid :results="results" :search-term="searchTerm" />
 </template>
 
 <script lang="ts">
 import { defineNuxtComponent } from "#imports"
 
-import type { FetchState } from "~/types/fetch-state"
-
-import { AudioDetail, ImageDetail } from "~/types/media"
+import type { AudioDetail, ImageDetail } from "~/types/media"
 
 import VAllResultsGrid from "~/components/VSearchResultsGrid/VAllResultsGrid.vue"
 
@@ -24,10 +18,6 @@ export default defineNuxtComponent({
     results: {
       type: Array as PropType<(ImageDetail | AudioDetail)[]>,
       default: () => [],
-    },
-    fetchState: {
-      type: Object as PropType<FetchState>,
-      required: true,
     },
     searchTerm: {
       type: String,

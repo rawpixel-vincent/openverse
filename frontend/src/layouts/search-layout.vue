@@ -34,7 +34,27 @@
       id="main-page"
       class="main-page flex h-full w-full min-w-0 flex-col justify-between overflow-y-auto"
     >
-      <slot />
+      <div
+        :id="skipToContentTargetId"
+        tabindex="-1"
+        class="browse-page flex w-full flex-col px-6 lg:px-10"
+      >
+        <VErrorSection
+          v-if="fetchingError"
+          :fetching-error="fetchingError"
+          class="w-full py-10"
+        />
+        <slot
+          v-else
+          :is-filter-sidebar-visible="isSidebarVisible"
+          @load-more="handleLoadMore"
+        />
+        <VScrollButton
+          v-show="showScrollButton"
+          :is-filter-sidebar-visible="isSidebarVisible"
+          data-testid="scroll-button"
+        />
+      </div>
       <VFooter
         mode="content"
         class="border-t border-dark-charcoal-20 bg-white"
@@ -51,11 +71,11 @@ import { useScroll } from "@vueuse/core"
 import { useUiStore } from "~/stores/ui"
 import { useSearchStore } from "~/stores/search"
 
-import {
-  IsHeaderScrolledKey,
-  IsSidebarVisibleKey,
-  ShowScrollButtonKey,
-} from "~/types/provides"
+import { useAsyncSearch } from "~/composables/use-async-search"
+
+import { IsHeaderScrolledKey, IsSidebarVisibleKey } from "~/types/provides"
+
+import { skipToContentTargetId } from "~/constants/window"
 
 import VBanners from "~/components/VBanner/VBanners.vue"
 import VFooter from "~/components/VFooter/VFooter.vue"
@@ -64,6 +84,8 @@ import VSearchGridFilter from "~/components/VFilters/VSearchGridFilter.vue"
 import VSafeBrowsing from "~/components/VSafeBrowsing/VSafeBrowsing.vue"
 import VHeaderDesktop from "~/components/VHeader/VHeaderDesktop.vue"
 import VHeaderMobile from "~/components/VHeader/VHeaderMobile/VHeaderMobile.vue"
+import VErrorSection from "~/components/VErrorSection/VErrorSection.vue"
+import VScrollButton from "~/components/VScrollButton.vue"
 
 /**
  * This is the SearchLayout: the search page that has a sidebar.
@@ -72,6 +94,8 @@ import VHeaderMobile from "~/components/VHeader/VHeaderMobile/VHeaderMobile.vue"
 export default defineComponent({
   name: "SearchLayout",
   components: {
+    VScrollButton,
+    VErrorSection,
     VSafeBrowsing,
     VBanners,
     VFooter,
@@ -80,7 +104,7 @@ export default defineComponent({
     VHeaderDesktop,
     VHeaderMobile,
   },
-  setup() {
+  async setup() {
     const headerRef = ref<HTMLElement | null>(null)
     const mainPageRef = ref<HTMLElement | null>(null)
 
@@ -120,7 +144,6 @@ export default defineComponent({
       mainPageElement.value = document.getElementById("main-page")
     })
 
-    provide(ShowScrollButtonKey, showScrollButton)
     provide(IsHeaderScrolledKey, isHeaderScrolled)
     provide(IsSidebarVisibleKey, isSidebarVisible)
 
@@ -129,6 +152,8 @@ export default defineComponent({
         ? "border-b-dark-charcoal-20"
         : "border-b-tx"
     )
+
+    const { handleLoadMore, fetchingError } = await useAsyncSearch()
 
     return {
       mainPageRef,
@@ -139,6 +164,11 @@ export default defineComponent({
       isSidebarVisible,
 
       headerBorder,
+
+      fetchingError,
+      handleLoadMore,
+      skipToContentTargetId,
+      showScrollButton,
     }
   },
 })

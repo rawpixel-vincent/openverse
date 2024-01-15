@@ -1,7 +1,6 @@
 <template>
   <VImageGrid
     :results="results"
-    :fetch-state="fetchState"
     kind="search"
     :image-grid-label="$t('browsePage.aria.results', { query: searchTerm })"
   />
@@ -11,7 +10,6 @@
 import { defineNuxtComponent } from "#imports"
 
 import type { ImageDetail } from "~/types/media"
-import type { FetchState } from "~/types/fetch-state"
 
 import VImageGrid from "~/components/VSearchResultsGrid/VImageGrid.vue"
 
@@ -28,10 +26,6 @@ export default defineNuxtComponent({
     results: {
       type: Array as PropType<ImageDetail[]>,
       default: () => [],
-    },
-    fetchState: {
-      type: Object as PropType<FetchState>,
-      required: true,
     },
   },
 })
