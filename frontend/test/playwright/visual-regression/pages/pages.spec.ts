@@ -87,15 +87,5 @@ test.describe("layout color is set correctly", () => {
         { maxDiffPixelRatio: 0.01 }
       )
     })
-
-    // https://github.com/wordpress/openverse/issues/411
-    test.skip("nonexistent `image` page", async ({ page }) => {
-      await page.goto("/image/non-existent")
-
-      expect(await page.screenshot({ fullPage: true })).toMatchSnapshot(
-        "non-existent-ltr-lg.png",
-        { maxDiffPixelRatio: 0.01 }
-      )
-    })
   })
 })
