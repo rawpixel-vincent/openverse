@@ -32,7 +32,9 @@ test.describe("collections", () => {
     // Using the href because there are multiple links with the same text.
     await page.click('[href*="/tag/cat"]')
 
+    await page.waitForURL(/image\/tag\/cat/)
     await expect(getH1(page, /cat/i)).toBeVisible()
+
     await expect(loadMoreButton(page)).toBeEnabled()
     expect(await page.locator("figure").count()).toEqual(20)
 
@@ -44,6 +46,7 @@ test.describe("collections", () => {
 
     await page.getByRole("link", { name: sourcePattern }).first().click()
 
+    await page.waitForURL(/image\/source\/flickr\//)
     await expect(loadMoreButton(page)).toBeEnabled()
     await expect(getH1(page, sourcePattern)).toBeVisible()
     expect(await page.locator("figure").count()).toEqual(20)
@@ -54,6 +57,7 @@ test.describe("collections", () => {
     const creatorPattern = /strogoscope/i
     await page.getByRole("link", { name: creatorPattern }).first().click()
 
+    await page.waitForURL(/image\/source\/flickr\/creator\/strogoscope\//)
     await expect(getH1(page, creatorPattern)).toBeVisible()
     await expect(loadMoreButton(page)).toBeEnabled()
     expect(await page.locator("figure").count()).toEqual(20)
