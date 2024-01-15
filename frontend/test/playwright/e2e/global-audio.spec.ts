@@ -1,5 +1,3 @@
-import path from "path"
-
 import { expect, test } from "@playwright/test"
 
 import {
@@ -13,13 +11,11 @@ import audio from "~~/test/playwright/utils/audio"
 
 test.describe.configure({ mode: "parallel" })
 
-const harPath = path.join(__dirname, "..", "..", "hars", "global-audio.har")
-
 test.describe("global audio", () => {
   breakpoints.describeXs(() => {
     test.beforeEach(async ({ page }) => {
       await preparePageForTests(page, "xs")
-      await page.routeFromHAR(harPath, {
+      await page.routeFromHAR("./test/hars/global-audio-e2e.har", {
         url: /v1|wikimedia/,
         update: false,
       })

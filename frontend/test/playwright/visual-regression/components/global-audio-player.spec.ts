@@ -1,5 +1,3 @@
-import path from "path"
-
 import { test } from "@playwright/test"
 
 import {
@@ -11,14 +9,12 @@ import {
 import breakpoints from "~~/test/playwright/utils/breakpoints"
 import audio from "~~/test/playwright/utils/audio"
 
-const harPath = path.join(__dirname, "..", "..", "hars", "global-audio.har")
-
 for (const dir of languageDirections) {
   breakpoints.describeXs(async ({ expectSnapshot }) => {
     test(`global audio player on the search page - ${dir}`, async ({
       page,
     }) => {
-      await page.routeFromHAR(harPath, {
+      await page.routeFromHAR("./test/hars/global-audio-vr.har", {
         url: /v1|wikimedia/,
         update: false,
       })
