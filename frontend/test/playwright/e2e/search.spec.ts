@@ -33,7 +33,7 @@ test("scroll to top on new search term submitted", async ({ page }) => {
 
   expect(scrollY).not.toBe(0)
 
-  await searchFromHeader(page, "honey")
+  await searchFromHeader(page, "cat")
   scrollY = await page.evaluate(
     () => document.getElementById("main-page")?.scrollTop
   )
