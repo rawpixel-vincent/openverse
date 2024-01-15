@@ -1,3 +1,5 @@
+import path from "path"
+
 import { test, expect, Page } from "@playwright/test"
 
 import { preparePageForTests, t } from "~~/test/playwright/utils/navigation"
@@ -9,12 +11,18 @@ const getH1 = (page: Page, text: string | RegExp) =>
 const loadMoreButton = (page: Page) =>
   page.getByRole("button", { name: t("browsePage.load") })
 
+const harPath = path.join(__dirname, "..", "..", "hars", "collections.har")
+
 test.describe("collections", () => {
   test.beforeEach(async ({ page }) => {
     await preparePageForTests(page, "xl", {
       features: {
         additional_search_views: "on",
       },
+    })
+    await page.routeFromHAR(harPath, {
+      url: /v1/,
+      update: false,
     })
     await page.goto("/image/f9384235-b72e-4f1e-9b05-e1b116262a29?q=cat")
     await expect(getH1(page, /cat/i)).toBeVisible()
@@ -27,6 +35,7 @@ test.describe("collections", () => {
     await expect(getH1(page, /cat/i)).toBeVisible()
     await expect(loadMoreButton(page)).toBeEnabled()
     expect(await page.locator("figure").count()).toEqual(20)
+
     expect(page.url()).toMatch(/image\/tag\/cat/)
   })
 
@@ -45,8 +54,8 @@ test.describe("collections", () => {
     const creatorPattern = /strogoscope/i
     await page.getByRole("link", { name: creatorPattern }).first().click()
 
-    await expect(loadMoreButton(page)).toBeEnabled()
     await expect(getH1(page, creatorPattern)).toBeVisible()
+    await expect(loadMoreButton(page)).toBeEnabled()
     expect(await page.locator("figure").count()).toEqual(20)
     expect(page.url()).toMatch(/image\/source\/flickr\/creator\/strogoscope\//)
   })
