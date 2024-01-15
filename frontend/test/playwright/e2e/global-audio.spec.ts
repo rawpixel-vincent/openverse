@@ -15,8 +15,12 @@ test.describe("global audio", () => {
   breakpoints.describeXs(() => {
     test.beforeEach(async ({ page }) => {
       await preparePageForTests(page, "xs")
+      await page.routeFromHAR("./test/hars/global-audio-provider.har", {
+        url: /wikimedia/,
+        update: false,
+      })
       await page.routeFromHAR("./test/hars/global-audio-e2e.har", {
-        url: /v1|wikimedia/,
+        url: /v1/,
         update: false,
       })
     })

@@ -14,8 +14,12 @@ for (const dir of languageDirections) {
     test(`global audio player on the search page - ${dir}`, async ({
       page,
     }) => {
+      await page.routeFromHAR("./test/hars/global-audio-provider.har", {
+        url: /wikimedia/,
+        update: false,
+      })
       await page.routeFromHAR("./test/hars/global-audio-vr.har", {
-        url: /v1|wikimedia/,
+        url: /v1/,
         update: false,
       })
       await preparePageForTests(page, "xs")

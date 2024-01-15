@@ -1,5 +1,3 @@
-import path from "path"
-
 import { test, expect, Page } from "@playwright/test"
 
 import { preparePageForTests, t } from "~~/test/playwright/utils/navigation"
@@ -11,8 +9,6 @@ const getH1 = (page: Page, text: string | RegExp) =>
 const loadMoreButton = (page: Page) =>
   page.getByRole("button", { name: t("browsePage.load") })
 
-const harPath = path.join(__dirname, "..", "..", "hars", "collections.har")
-
 test.describe("collections", () => {
   test.beforeEach(async ({ page }) => {
     await preparePageForTests(page, "xl", {
@@ -20,7 +16,7 @@ test.describe("collections", () => {
         additional_search_views: "on",
       },
     })
-    await page.routeFromHAR(harPath, {
+    await page.routeFromHAR("./test/hars/collections.har", {
       url: /v1/,
       update: false,
     })
