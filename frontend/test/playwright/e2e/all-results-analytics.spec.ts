@@ -64,9 +64,7 @@ test.describe("all results grid analytics test", () => {
     })
   })
 
-  // In CI, clicking on the play button navigates to the audio detail page
-  // https://github.com/wordpress/openverse/issues/411
-  test.skip("sends AUDIO_INTERACTION event when audio is interacted", async ({
+  test("sends AUDIO_INTERACTION event when audio is interacted", async ({
     page,
   }) => {
     const analyticsEvents = collectAnalyticsEvents(page.context())
