@@ -12,6 +12,11 @@ import { mockProviderApis } from "~~/test/playwright/utils/route"
 
 import breakpoints from "~~/test/playwright/utils/breakpoints"
 
+import {
+  collectAnalyticsEvents,
+  expectEventPayloadToMatch,
+} from "~~/test/playwright/utils/analytics"
+
 import enMessages from "~/locales/en.json"
 
 import {
@@ -261,4 +266,22 @@ breakpoints.describeMobileAndDesktop(({ breakpoint }) => {
       await expect(page.getByRole("checkbox", { name: source })).toBeChecked()
     })
   }
+
+  test("sends APPLY_FILTER event", async ({ context, page }) => {
+    const events = collectAnalyticsEvents(context)
+    await goToSearchTerm(page, "cat")
+
+    await filters.open(page)
+    await page.getByRole("checkbox", { name: /use commercially/i }).click()
+
+    const applyFilterEvent = events.find((e) => e.n === "APPLY_FILTER")
+
+    expectEventPayloadToMatch(applyFilterEvent, {
+      category: "licenseTypes",
+      key: "commercial",
+      checked: true,
+      query: "cat",
+      searchType: ALL_MEDIA,
+    })
+  })
 })

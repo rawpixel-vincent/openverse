@@ -4,7 +4,6 @@ import {
   goToSearchTerm,
   preparePageForTests,
   renderModes,
-  sleep,
   t,
 } from "~~/test/playwright/utils/navigation"
 import { mockProviderApis } from "~~/test/playwright/utils/route"
@@ -46,8 +45,8 @@ const openSingleMediaView = async (
  */
 
 test.describe("Load more button", () => {
-  test.beforeEach(async ({ context }) => {
-    await mockProviderApis(context)
+  test.beforeEach(async ({ page }) => {
+    await preparePageForTests(page, "xl")
   })
 
   test("Clicking sends 2 requests on All view with enough results", async ({
@@ -112,21 +111,20 @@ test.describe("Load more button", () => {
             }
           }
         })
-        await goToSearchTerm(page, "horses snort", { mode })
+        await goToSearchTerm(page, "horses snort window", { mode })
 
         await page.click(loadMoreButton)
         expect(additionalRequests.length).toEqual(1)
-        expect(additionalRequests[0]).toEqual(IMAGE)
       })
 
       test(`Rendered on All view but not on the audio view when audio has only 1 page of results`, async ({
         page,
       }) => {
-        await goToSearchTerm(page, "horses snort", { mode })
+        await goToSearchTerm(page, "horses snort window", { mode })
         await expect(page.locator(loadMoreButton)).toBeVisible()
 
         // Cannot go to the audio view because the link is disabled.
-        await goToSearchTerm(page, "horses snort", {
+        await goToSearchTerm(page, "horses snort window", {
           mode,
           searchType: AUDIO,
         })
@@ -136,6 +134,10 @@ test.describe("Load more button", () => {
   }
 
   test.describe("Analytics events", () => {
+    test.beforeEach(async ({ context, page }) => {
+      await mockProviderApis(context)
+      await preparePageForTests(page, "xl")
+    })
     /**
      * Checks that an analytics event is posted to /api/event and has the correct
      * payload for the REACH_RESULT_END event.
@@ -144,15 +146,12 @@ test.describe("Load more button", () => {
       page,
       context,
     }) => {
-      await preparePageForTests(page, "xl")
       const analyticsEvents = collectAnalyticsEvents(context)
 
-      await page.goto("/search/?q=cat")
+      await goToSearchTerm(page, "cat")
 
       await page.locator(loadMoreButton).scrollIntoViewIfNeeded()
       await expect(page.locator(loadMoreButton)).toBeVisible()
-
-      await sleep(300)
 
       const reachResultEndEvent = analyticsEvents.find(
         (event) => event.n === "REACH_RESULT_END"

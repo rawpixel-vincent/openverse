@@ -12,7 +12,7 @@ import breakpoints from "~~/test/playwright/utils/breakpoints"
 const currentPageLink = 'div[role="dialog"] >> [aria-current="page"]'
 const currentPageLinkInPopover = '.popover-content >> [aria-current="page"]'
 
-const getMenuButton = async (page: Page) => {
+export const getMenuButton = async (page: Page) => {
   return page.getByRole("button", { name: t("header.aria.menu") })
 }
 
@@ -51,6 +51,9 @@ test.describe("Header internal", () => {
 
     test("the modal locks the scroll on xs breakpoint", async ({ page }) => {
       await page.goto("/about")
+
+      // Wait for hydration
+      await expect(await getMenuButton(page)).toBeEnabled()
       await scrollToBottom(page)
 
       await clickMenuButton(page)

@@ -1,9 +1,9 @@
 import { test, expect, Page } from "@playwright/test"
 
 import {
+  goToSearchTerm,
   LanguageDirection,
   languageDirections,
-  pathWithDir,
   preparePageForTests,
   t,
 } from "~~/test/playwright/utils/navigation"
@@ -38,7 +38,7 @@ for (const dir of languageDirections) {
        * we use the image search page. The last element on the all media search
        * page is the "license explanation" button, not a checkbox.
        */
-      await page.goto(pathWithDir("/search/image?q=birds", dir))
+      await goToSearchTerm(page, "birds", { mode: "SSR", dir })
     })
 
     test("should move focus to the sidebar after header", async ({ page }) => {

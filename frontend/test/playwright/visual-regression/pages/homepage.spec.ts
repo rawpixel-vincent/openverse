@@ -6,7 +6,6 @@ import {
   languageDirections,
   pathWithDir,
   preparePageForTests,
-  setCookies,
 } from "~~/test/playwright/utils/navigation"
 
 test.describe.configure({ mode: "parallel" })
@@ -64,25 +63,25 @@ for (const dir of languageDirections) {
 
           await expectSnapshot(`content-switcher-open-${dir}`, page)
         })
-
-        test("content switcher with external sources open", async ({
-          page,
-        }) => {
-          await setCookies(page.context(), {
-            features: { additional_search_types: "on" },
-          })
-
-          await page.goto(path)
-          await cleanImageCarousel(page)
-
-          await page.locator("#search-type-button").click()
-
-          await expectSnapshot(
-            `content-switcher-with-external-sources-open-${dir}`,
-            page
-          )
-        })
       })
+    })
+
+    test(`${dir} content switcher with additional search types open`, async ({
+      page,
+    }) => {
+      await preparePageForTests(page, breakpoint, {
+        features: { additional_search_types: "on" },
+      })
+
+      await page.goto(path)
+      await cleanImageCarousel(page)
+
+      await page.locator("#search-type-button").click()
+
+      await expectSnapshot(
+        `content-switcher-with-external-sources-open-${dir}`,
+        page
+      )
     })
   })
 }
