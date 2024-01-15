@@ -16,10 +16,6 @@ test.describe("collections", () => {
         additional_search_views: "on",
       },
     })
-    await page.routeFromHAR("./test/hars/collections.har", {
-      url: /v1/,
-      update: false,
-    })
     await page.goto("/image/f9384235-b72e-4f1e-9b05-e1b116262a29?q=cat")
     // Wait for the page to hydrate
     await expect(
