@@ -33,8 +33,7 @@ breakpoints.describeXl(({ breakpoint, expectSnapshot }) => {
     })
   }
   for (const status of singleResultCSRErrorStatuses) {
-    // https://github.com/WordPress/openverse/issues/411
-    test.skip(`${status} on single-result page on CSR`, async ({ page }) => {
+    test(`${status} on single-result page on CSR`, async ({ page }) => {
       await page.route(new RegExp(`v1/images/`), (route) => {
         return route.fulfill({ status })
       })
