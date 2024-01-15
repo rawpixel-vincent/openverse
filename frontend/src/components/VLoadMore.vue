@@ -14,9 +14,9 @@
   </div>
 </template>
 <script lang="ts">
-import { useI18n, useRoute } from "#imports"
+import { isSearchTypeSupported, useI18n, useRoute } from "#imports"
 
-import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue"
+import { computed, defineComponent, onMounted, ref, watch } from "vue"
 import { storeToRefs } from "pinia"
 import { useElementVisibility } from "@vueuse/core"
 
@@ -24,7 +24,7 @@ import { useAnalytics } from "~/composables/use-analytics"
 import { useMediaStore } from "~/stores/media"
 import { useSearchStore } from "~/stores/search"
 
-import type { SupportedSearchType } from "~/constants/media"
+import { ALL_MEDIA } from "~/constants/media"
 
 import VButton from "~/components/VButton.vue"
 
@@ -33,18 +33,8 @@ export default defineComponent({
   components: {
     VButton,
   },
-  props: {
-    searchTerm: {
-      type: String,
-      required: true,
-    },
-    searchType: {
-      type: String as PropType<SupportedSearchType>,
-      required: true,
-    },
-  },
   emits: ["load-more"],
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const loadMoreSectionRef = ref(null)
     const route = useRoute()
     const i18n = useI18n({ useScope: "global" })
@@ -53,10 +43,11 @@ export default defineComponent({
     const { sendCustomEvent } = useAnalytics()
 
     const { resultCount, currentPage, fetchState } = storeToRefs(mediaStore)
+    const { searchTerm, searchType } = storeToRefs(searchStore)
 
     const searchStarted = computed(() => {
       return searchStore.strategy === "default"
-        ? props.searchTerm !== ""
+        ? searchTerm.value !== ""
         : searchStore.collectionParams !== null
     })
 
@@ -75,6 +66,15 @@ export default defineComponent({
       )
     })
 
+    const eventPayload = computed(() => {
+      return {
+        query: searchTerm.value,
+        searchType: isSearchTypeSupported(searchType.value)
+          ? searchType.value
+          : ALL_MEDIA,
+        resultPage: currentPage.value || 1,
+      }
+    })
     const reachResultEndEventSent = ref(false)
     /**
      * On button click, fetch media, persisting the existing results.
@@ -86,15 +86,8 @@ export default defineComponent({
       if (fetchState.value.isFetching) {
         return
       }
-
       reachResultEndEventSent.value = false
-
-      sendCustomEvent("LOAD_MORE_RESULTS", {
-        query: props.searchTerm,
-        searchType: props.searchType,
-        resultPage: currentPage.value || 1,
-      })
-
+      sendCustomEvent("LOAD_MORE_RESULTS", eventPayload.value)
       emit("load-more")
     }
 
@@ -103,11 +96,7 @@ export default defineComponent({
       // currentPage is updated from 0, so we use the value or 1.
       // The currentPage can never be 0 here because then the loadMore
       // button would not be visible.
-      sendCustomEvent("REACH_RESULT_END", {
-        searchType: props.searchType,
-        query: props.searchTerm,
-        resultPage: currentPage.value || 1,
-      })
+      sendCustomEvent("REACH_RESULT_END", eventPayload.value)
     }
 
     const buttonLabel = computed(() =>

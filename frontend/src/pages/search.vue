@@ -1,12 +1,12 @@
 <template>
   <section>
-    <header v-if="searchTerm && supported" class="my-0 md:mb-8 md:mt-4">
+    <header v-if="supported" class="my-0 md:mb-8 md:mt-4">
       <VSearchResultsTitle :size="isAllView ? 'large' : 'default'">{{
         searchTerm
       }}</VSearchResultsTitle>
     </header>
     <NuxtPage
-      v-if="isSearchTypeSupported(searchType)"
+      v-if="supported"
       :key="$route.path"
       :results="results"
       :search-term="searchTerm"
@@ -16,20 +16,6 @@
       v-if="fetchState.isFetching && !results.length"
       :is-sidebar-visible="isFilterSidebarVisible"
       :is-for-tab="isSearchTypeSupported(searchType) ? searchType : 'all'"
-    />
-    <footer :class="isAllView ? 'mb-6 mt-4 lg:mb-10' : 'mt-4'">
-      <VLoadMore
-        v-if="isSearchTypeSupported(searchType)"
-        :search-term="searchTerm"
-        :search-type="searchType"
-        @load-more="$emit('load-more')"
-      />
-    </footer>
-    <VExternalSearchForm
-      v-if="!isAllView"
-      :search-term="searchTerm"
-      :is-supported="supported"
-      :has-no-results="false"
     />
   </section>
 </template>
@@ -58,7 +44,7 @@ import VGridSkeleton from "~/components/VSkeleton/VGridSkeleton.vue"
 import VLoadMore from "~/components/VLoadMore.vue"
 
 export default defineNuxtComponent({
-  name: "BrowsePage",
+  name: "SearchPage",
   methods: { isSearchTypeSupported },
   components: {
     VLoadMore,

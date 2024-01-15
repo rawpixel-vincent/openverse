@@ -2,9 +2,8 @@
   <div
     class="app h-dyn-screen min-h-dyn-screen grid grid-rows-[auto,1fr] bg-white"
     :class="[
-      { 'has-sidebar': isSidebarVisible },
       isSidebarVisible
-        ? 'grid-cols-[1fr_var(--filter-sidebar-width)]'
+        ? 'has-sidebar grid-cols-[1fr_var(--filter-sidebar-width)]'
         : 'grid-cols-1',
     ]"
   >
@@ -44,16 +43,23 @@
           :fetching-error="fetchingError"
           class="w-full py-10"
         />
-        <slot
-          v-else
-          :is-filter-sidebar-visible="isSidebarVisible"
-          @load-more="handleLoadMore"
-        />
-        <VScrollButton
-          v-show="showScrollButton"
-          :is-filter-sidebar-visible="isSidebarVisible"
-          data-testid="scroll-button"
-        />
+        <template v-else>
+          <slot :is-filter-sidebar-visible="isSidebarVisible" />
+          <footer :class="isAllView ? 'mb-6 mt-4 lg:mb-10' : 'mt-4'">
+            <VLoadMore v-if="supported" @load-more="handleLoadMore" />
+          </footer>
+          <VExternalSearchForm
+            v-if="!isAllView"
+            :search-term="searchTerm"
+            :is-supported="supported"
+            :has-no-results="false"
+          />
+          <VScrollButton
+            v-show="showScrollButton"
+            :is-filter-sidebar-visible="isSidebarVisible"
+            data-testid="scroll-button"
+          />
+        </template>
       </div>
       <VFooter
         mode="content"
@@ -67,6 +73,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, provide, ref, watch } from "vue"
 import { useScroll } from "@vueuse/core"
+import { storeToRefs } from "pinia"
 
 import { useUiStore } from "~/stores/ui"
 import { useSearchStore } from "~/stores/search"
@@ -76,6 +83,7 @@ import { useAsyncSearch } from "~/composables/use-async-search"
 import { IsHeaderScrolledKey, IsSidebarVisibleKey } from "~/types/provides"
 
 import { skipToContentTargetId } from "~/constants/window"
+import { ALL_MEDIA } from "~/constants/media"
 
 import VBanners from "~/components/VBanner/VBanners.vue"
 import VFooter from "~/components/VFooter/VFooter.vue"
@@ -86,6 +94,8 @@ import VHeaderDesktop from "~/components/VHeader/VHeaderDesktop.vue"
 import VHeaderMobile from "~/components/VHeader/VHeaderMobile/VHeaderMobile.vue"
 import VErrorSection from "~/components/VErrorSection/VErrorSection.vue"
 import VScrollButton from "~/components/VScrollButton.vue"
+import VLoadMore from "~/components/VLoadMore.vue"
+import VExternalSearchForm from "~/components/VExternalSearch/VExternalSearchForm.vue"
 
 /**
  * This is the SearchLayout: the search page that has a sidebar.
@@ -94,6 +104,8 @@ import VScrollButton from "~/components/VScrollButton.vue"
 export default defineComponent({
   name: "SearchLayout",
   components: {
+    VExternalSearchForm,
+    VLoadMore,
     VScrollButton,
     VErrorSection,
     VSafeBrowsing,
@@ -111,6 +123,9 @@ export default defineComponent({
     const uiStore = useUiStore()
     const searchStore = useSearchStore()
 
+    const { searchTerm, searchTypeIsSupported: supported } =
+      storeToRefs(searchStore)
+
     const isDesktopLayout = computed(() => uiStore.isDesktopLayout)
 
     /**
@@ -118,10 +133,7 @@ export default defineComponent({
      * on search result pages for supported search types.
      */
     const isSidebarVisible = computed(
-      () =>
-        searchStore.searchTypeIsSupported &&
-        uiStore.isFilterVisible &&
-        isDesktopLayout.value
+      () => supported.value && uiStore.isFilterVisible && isDesktopLayout.value
     )
 
     const isHeaderScrolled = ref(false)
@@ -152,6 +164,7 @@ export default defineComponent({
         ? "border-b-dark-charcoal-20"
         : "border-b-tx"
     )
+    const isAllView = computed(() => searchStore.searchType === ALL_MEDIA)
 
     const { handleLoadMore, fetchingError } = await useAsyncSearch()
 
@@ -169,6 +182,10 @@ export default defineComponent({
       handleLoadMore,
       skipToContentTargetId,
       showScrollButton,
+
+      isAllView,
+      supported,
+      searchTerm,
     }
   },
 })
