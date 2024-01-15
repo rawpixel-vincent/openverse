@@ -25,7 +25,12 @@ test.describe("collections", () => {
       update: false,
     })
     await page.goto("/image/f9384235-b72e-4f1e-9b05-e1b116262a29?q=cat")
-    await expect(getH1(page, /cat/i)).toBeVisible()
+    // Wait for the page to hydrate
+    await expect(
+      page.getByRole("button", {
+        name: t("mediaDetails.reuse.copyLicense.copyText"),
+      })
+    ).toBeEnabled()
   })
 
   test("can open tags collection page from image page", async ({ page }) => {
