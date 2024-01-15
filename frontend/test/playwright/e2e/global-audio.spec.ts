@@ -19,10 +19,6 @@ test.describe("global audio", () => {
         url: /wikimedia/,
         update: false,
       })
-      await page.routeFromHAR("./test/hars/global-audio-e2e.har", {
-        url: /v1/,
-        update: false,
-      })
     })
     test("track continues playing when navigating from search to details page", async ({
       page,

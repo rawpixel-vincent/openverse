@@ -18,10 +18,6 @@ for (const dir of languageDirections) {
         url: /wikimedia/,
         update: false,
       })
-      await page.routeFromHAR("./test/hars/global-audio-vr.har", {
-        url: /v1/,
-        update: false,
-      })
       await preparePageForTests(page, "xs")
       await page.goto(
         pathWithDir("/search/audio/?q=honey&length=shortest", dir)
