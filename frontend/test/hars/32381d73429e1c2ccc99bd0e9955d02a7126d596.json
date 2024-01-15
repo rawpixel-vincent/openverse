@@ -4,42 +4,42 @@
     "display_name": "Flickr",
     "source_url": "https://www.flickr.com",
     "logo_url": null,
-    "media_count": 507198268
+    "media_count": 468372073
   },
   {
     "source_name": "wikimedia",
     "display_name": "Wikimedia Commons",
     "source_url": "https://commons.wikimedia.org",
     "logo_url": null,
-    "media_count": 64324563
+    "media_count": 47823833
   },
   {
     "source_name": "animaldiversity",
     "display_name": "Animal Diversity Web",
     "source_url": "https://animaldiversity.org",
     "logo_url": null,
-    "media_count": 15550
+    "media_count": 15554
   },
   {
     "source_name": "bio_diversity",
     "display_name": "Biodiversity Heritage Library",
     "source_url": "https://www.biodiversitylibrary.org/",
     "logo_url": null,
-    "media_count": 247665
+    "media_count": 243596
   },
   {
     "source_name": "brooklynmuseum",
     "display_name": "Brooklyn Museum",
     "source_url": "https://www.brooklynmuseum.org",
     "logo_url": null,
-    "media_count": 70057
+    "media_count": 63340
   },
   {
     "source_name": "clevelandmuseum",
     "display_name": "Cleveland Museum of Art",
     "source_url": "http://www.clevelandart.org",
     "logo_url": null,
-    "media_count": 39269
+    "media_count": 34828
   },
   {
     "source_name": "CAPL",
@@ -53,7 +53,14 @@
     "display_name": "SpaceX",
     "source_url": "https://spacex.com",
     "logo_url": null,
-    "media_count": 1360
+    "media_count": 924
+  },
+  {
+    "source_name": "deviantart",
+    "display_name": "DeviantArt",
+    "source_url": "https://www.deviantart.com",
+    "logo_url": null,
+    "media_count": 238982
   },
   {
     "source_name": "svgsilh",
@@ -77,6 +84,13 @@
     "media_count": 32395
   },
   {
+    "source_name": "thorvaldsensmuseum",
+    "display_name": "Thorvaldsens Museum",
+    "source_url": "http://www.thorvaldsensmuseum.dk",
+    "logo_url": null,
+    "media_count": 5356
+  },
+  {
     "source_name": "WoRMS",
     "display_name": "World Register of Marine Species",
     "source_url": "http://www.marinespecies.org",
@@ -88,49 +102,56 @@
     "display_name": "Smithsonian Institution: National Air and Space Museum",
     "source_url": "https://airandspace.si.edu",
     "logo_url": null,
-    "media_count": 6513
+    "media_count": 5109
   },
   {
     "source_name": "smithsonian_american_art_museum",
     "display_name": "Smithsonian Institution: Smithsonian American Art Museum",
     "source_url": "https://americanart.si.edu/",
     "logo_url": null,
-    "media_count": 12498
+    "media_count": 11887
   },
   {
     "source_name": "smithsonian_american_history_museum",
     "display_name": "Smithsonian Institution: National Museum of American History",
     "source_url": "https://americanhistory.si.edu/",
     "logo_url": null,
-    "media_count": 13718
+    "media_count": 2824
   },
   {
     "source_name": "smithsonian_american_indian_museum",
     "display_name": "Smithsonian Institution: National Museum of the American Indian",
     "source_url": "https://americanindian.si.edu/",
     "logo_url": null,
-    "media_count": 245
+    "media_count": 246
   },
   {
     "source_name": "smithsonian_gardens",
     "display_name": "Smithsonian Institution: Smithsonian Gardens",
     "source_url": "https://gardens.si.edu/",
     "logo_url": null,
-    "media_count": 8387
+    "media_count": 689
   },
   {
     "source_name": "smithsonian_anacostia_museum",
     "display_name": "Smithsonian Institution: Anacostia Community Museum",
     "source_url": "https://anacostia.si.edu/",
     "logo_url": null,
-    "media_count": 601
+    "media_count": 571
   },
   {
     "source_name": "nypl",
     "display_name": "New York Public Library",
     "source_url": "https://www.nypl.org",
     "logo_url": null,
-    "media_count": 1277
+    "media_count": 1275
+  },
+  {
+    "source_name": "floraon",
+    "display_name": "Flora-On",
+    "source_url": "https://flora-on.pt",
+    "logo_url": null,
+    "media_count": 55010
   },
   {
     "source_name": "geographorguk",
@@ -144,28 +165,42 @@
     "display_name": "Metropolitan Museum of Art",
     "source_url": "https://www.metmuseum.org",
     "logo_url": null,
-    "media_count": 403576
+    "media_count": 243515
+  },
+  {
+    "source_name": "mccordmuseum",
+    "display_name": "McCord Museum",
+    "source_url": "http://www.musee-mccord.qc.ca/en",
+    "logo_url": null,
+    "media_count": 108815
   },
   {
     "source_name": "museumsvictoria",
     "display_name": "Museums Victoria",
     "source_url": "https://museumsvictoria.com.au",
     "logo_url": null,
-    "media_count": 168429
+    "media_count": 149880
   },
   {
     "source_name": "nasa",
     "display_name": "NASA",
     "source_url": "https://www.nasa.gov/",
     "logo_url": null,
-    "media_count": 125263
+    "media_count": 115600
+  },
+  {
+    "source_name": "phylopic",
+    "display_name": "PhyloPic",
+    "source_url": "http://phylopic.org",
+    "logo_url": null,
+    "media_count": 3892
   },
   {
     "source_name": "rawpixel",
     "display_name": "Rawpixel",
     "source_url": "https://www.rawpixel.com",
     "logo_url": null,
-    "media_count": 178853
+    "media_count": 25831
   },
   {
     "source_name": "rijksmuseum",
@@ -179,7 +214,7 @@
     "display_name": "Science Museum – UK",
     "source_url": "https://www.sciencemuseum.org.uk",
     "logo_url": null,
-    "media_count": 112833
+    "media_count": 64542
   },
   {
     "source_name": "sketchfab",
@@ -200,56 +235,56 @@
     "display_name": "Smithsonian Institution: National Museum of African American History and Culture",
     "source_url": "https://nmaahc.si.edu",
     "logo_url": null,
-    "media_count": 10895
+    "media_count": 7488
   },
   {
     "source_name": "smithsonian_african_art_museum",
     "display_name": "Smithsonian Institution: National Museum of African Art",
     "source_url": "https://africa.si.edu/",
     "logo_url": null,
-    "media_count": 365
+    "media_count": 135
   },
   {
     "source_name": "smithsonian_national_museum_of_natural_history",
     "display_name": "Smithsonian Institution: National Museum of Natural History",
     "source_url": "https://naturalhistory.si.edu/",
     "logo_url": null,
-    "media_count": 3687662
+    "media_count": 2796396
   },
   {
     "source_name": "smithsonian_cooper_hewitt_museum",
     "display_name": "Smithsonian Institution: Cooper Hewitt, Smithsonian Design Museum",
     "source_url": "https://www.cooperhewitt.org",
     "logo_url": null,
-    "media_count": 75037
+    "media_count": 65694
   },
   {
     "source_name": "smithsonian_freer_gallery_of_art",
     "display_name": "Smithsonian Institution: Freer Gallery of Art",
     "source_url": "https://asia.si.edu/",
     "logo_url": null,
-    "media_count": 7086
+    "media_count": 3878
   },
   {
     "source_name": "smithsonian_hirshhorn_museum",
     "display_name": "Smithsonian Institution: Hirshhorn Museum and Sculpture Garden",
     "source_url": "https://hirshhorn.si.edu/",
     "logo_url": null,
-    "media_count": 878
+    "media_count": 423
   },
   {
     "source_name": "smithsonian_portrait_gallery",
     "display_name": "Smithsonian Institution: National Portrait Gallery",
     "source_url": "https://npg.si.edu/",
     "logo_url": null,
-    "media_count": 16212
+    "media_count": 13176
   },
   {
     "source_name": "smithsonian_postal_museum",
     "display_name": "Smithsonian Institution: National Postal Museum",
     "source_url": "http://postalmuseum.si.edu/",
     "logo_url": null,
-    "media_count": 7155
+    "media_count": 2945
   },
   {
     "source_name": "smithsonian_zoo_and_conservation",
@@ -263,77 +298,28 @@
     "display_name": "Smithsonian Institution Archives",
     "source_url": "https://siarchives.si.edu/",
     "logo_url": null,
-    "media_count": 8313
+    "media_count": 6853
   },
   {
     "source_name": "woc_tech",
     "display_name": "WOCinTech Chat",
     "source_url": "https://www.wocintechchat.com/",
     "logo_url": null,
-    "media_count": 268
-  },
-  {
-    "source_name": "finnish_heritage_agency",
-    "display_name": "Finnish Heritage Agency",
-    "source_url": "https://www.museovirasto.fi/en/",
-    "logo_url": null,
-    "media_count": 270832
+    "media_count": 267
   },
   {
     "source_name": "stocksnap",
     "display_name": "StockSnap.io",
     "source_url": "https://stocksnap.io",
     "logo_url": null,
-    "media_count": 38879
+    "media_count": 34321
   },
   {
     "source_name": "wordpress",
     "display_name": "WP Photo Directory",
     "source_url": "https://wordpress.org/photos",
     "logo_url": null,
-    "media_count": 12252
-  },
-  {
-    "source_name": "smk",
-    "display_name": "National Gallery of Denmark (SMK)",
-    "source_url": "https://open.smk.dk/",
-    "logo_url": null,
-    "media_count": 40004
-  },
-  {
-    "source_name": "finnish_satakunnan_museum",
-    "display_name": "Finnish Satakunnan Museum",
-    "source_url": "https://satakunnanmuseo.pori.fi/en/",
-    "logo_url": null,
-    "media_count": 12760
-  },
-  {
-    "source_name": "justtakeitfree",
-    "display_name": "Just take it free",
-    "source_url": "https://justtakeitfree.com/",
-    "logo_url": null,
-    "media_count": 167
-  },
-  {
-    "source_name": "phylopic",
-    "display_name": "PhyloPic",
-    "source_url": "http://phylopic.org",
-    "logo_url": null,
-    "media_count": 8665
-  },
-  {
-    "source_name": "national_museum_of_finland",
-    "display_name": "National Museum of Finland",
-    "source_url": "https://www.kansallismuseo.fi/en/kansallismuseo",
-    "logo_url": null,
-    "media_count": 408
-  },
-  {
-    "source_name": "europeana",
-    "display_name": "Europeana",
-    "source_url": "https://www.europeana.eu/en",
-    "logo_url": null,
-    "media_count": 10028755
+    "media_count": 154
   },
   {
     "source_name": "inaturalist",
@@ -348,19 +334,5 @@
     "source_url": "https://nappy.co",
     "logo_url": null,
     "media_count": 2211
-  },
-  {
-    "source_name": "wellcome_collection",
-    "display_name": "Wellcome Collection",
-    "source_url": "https://wellcomecollection.org/",
-    "logo_url": null,
-    "media_count": 92478
-  },
-  {
-    "source_name": "bib_gulbenkian",
-    "display_name": "Gulbenkian Art Library",
-    "source_url": "https://gulbenkian.pt/biblioteca-arte/",
-    "logo_url": null,
-    "media_count": 6104
   }
 ]
